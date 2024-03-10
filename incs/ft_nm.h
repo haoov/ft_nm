@@ -3,7 +3,11 @@
 
 #include <elf.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/mman.h>
 #include "../libft/incs/libft.h"
+#include "ft_nm_types.h"
 #include "nm_error.h"
 
 #define OPTS	"agnurp"
@@ -15,10 +19,7 @@
 #define OREV	0x10 //-r display in reverse order
 #define ONSRT	0x20 //-p dont sort
 
-typedef struct data_s {
-	uint8_t opt;
-} data_t;
-
-int parse_opt(data_t *data, char **argv);
+int		parse_opt(data_t *data, char **argv);
+int		parse_file(char *file, data_t *data);
 
 #endif // FT_NM
