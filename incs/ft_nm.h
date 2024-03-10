@@ -3,6 +3,7 @@
 
 #include <elf.h>
 #include <stdio.h>
+#include "../libft/incs/libft.h"
 #include "nm_error.h"
 
 #define OPTS	"agnurp"
@@ -17,5 +18,7 @@
 typedef struct data_s {
 	uint8_t opt;
 } data_t;
+
+int parse_opt(data_t *data, char **argv);
 
 #endif // FT_NM

@@ -2,6 +2,7 @@
 #define NM_ERROR_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #define ERIOPT		1
 #define ERNOFILE	2
