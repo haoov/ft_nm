@@ -12,7 +12,7 @@ DEPDIR		=	$(PROJDIR)/.deps
 #               Compiler             #
 #------------------------------------#
 CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=
 INCLUDE		=	-I $(INCDIR)
 
 #------------------------------------#

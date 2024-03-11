@@ -10,7 +10,8 @@
 #define ERIOPT		1
 #define ERNOFILE	2
 #define ERWFFMT		3
-#define ERRNO		4
+#define EROUTB		4
+#define ERRNO		5
 
 #define	ERIOPT_MSG		"invalid option --"
 #define	ERNOFILE_MSG	"no such file"

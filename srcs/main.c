@@ -32,3 +32,14 @@ int main(int argc, char **argv) {
 	}
 	exit_prgm(0, data);
 }
+
+
+	// for (int i = 0; i < ehdr->e_shnum; i++) {
+	// 	shdr = (Elf64_Shdr *)((char *)fdata->map + ehdr->e_shoff + i * ehdr->e_shentsize);
+	// 	if (shdr->sh_type == SHT_STRTAB) {
+	// 		char *strtab = (char *)fdata->map + shdr->sh_offset;
+	// 		for (int j = 0; j < shdr->sh_size; j += ft_strlen(strtab + j) + 1) {
+	// 			ft_printf(1, "Section name: %s\n", strtab + j);
+	// 		}
+	// 	}
+	// }
