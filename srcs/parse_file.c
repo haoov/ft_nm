@@ -38,7 +38,9 @@ int parse_symlist(fdata_t *fdata, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr, Elf64_Shdr
 			pos += ft_strlen(strtab + pos);
 			j++;
 		}
-		ft_printf(1, "%s\n", strtab + idx + pos);
+		if ((sym->st_info & 0x0F) == STT_NOTYPE && (sym->st_info >> 4) == STB_LOCAL)
+			continue;
+		ft_printf(1, "%.16x %c %s\n", sym->st_value, 'T', strtab + idx + pos);
 	}
 	return (0);
 }
