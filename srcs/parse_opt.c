@@ -18,8 +18,8 @@ int parse_opt(data_t *data, char **argv) {
 					data->opt &= ~OALL;
 			}
 			else {
-				SET_ERROR(ERIOPT, &argv[i][j]);
-				return (-1);
+				print_error(ERIOPT, &argv[i][j]);
+				exit(-1);
 			}
 		}
 	}

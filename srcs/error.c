@@ -1,26 +1,26 @@
 #include "ft_nm.h"
 
-error_t error_g = {0, 0};
+uint8_t error_g = 0;
 
 char *err_msgs[] = {
 	ERIOPT_MSG, ERNOFILE_MSG, ERWFFMT_MSG
 };
 
-error_t *error_location(void) {
+uint8_t *error_location(void) {
 	return (&error_g);
 }
 
-void print_error(void) {
-	if (error.e == ERRNO) {
+void print_error(uint8_t err, char *i) {
+	if (err == ERRNO) {
 		if (errno == EISDIR)
-			ft_printf(2, "ft_nm: Warning: \'%s\' is a directory\n", error.i);
+			ft_printf(2, "ft_nm: Warning: \'%s\' is a directory\n", i);
 		else
-			ft_printf(2, "ft_nm: %s: %s\n", error.i, strerror(errno));
+			ft_printf(2, "ft_nm: %s: %s\n", i, strerror(errno));
 	}
-	else if (error.e == ERIOPT)
-		ft_printf(2, "ft_nm: %s \'%c\'\n", err_msgs[error.e - 1], *error.i);
-	else if (error.e == ERNOFILE)
-		ft_printf(2, "ft_nm: \'%s\': %s\n", error.i, err_msgs[error.e - 1]);
+	else if (err == ERIOPT)
+		ft_printf(2, "ft_nm: %s \'%c\'\n", err_msgs[err - 1], *i);
+	else if (err == ERNOFILE)
+		ft_printf(2, "ft_nm: \'%s\': %s\n", i, err_msgs[err - 1]);
 	else
-		ft_printf(2, "ft_nm: %s: %s\n", error.i, err_msgs[error.e - 1]);
+		ft_printf(2, "ft_nm: %s: %s\n", i, err_msgs[err - 1]);
 }

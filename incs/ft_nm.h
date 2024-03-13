@@ -19,6 +19,8 @@
 #define OREV	0x10 //-r display in reverse order
 #define ONSRT	0x20 //-p dont sort
 
+typedef uint8_t	byte_t;
+
 int		parse_opt(data_t *data, char **argv);
 int		parse_file(char *file, data_t *data);
 

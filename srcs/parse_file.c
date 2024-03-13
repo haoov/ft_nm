@@ -1,18 +1,5 @@
 #include "ft_nm.h"
 
-int check_format(fdata_t fdata) {
-	char e_ident[EI_NIDENT];
-	if (read(fdata.fd, e_ident, EI_NIDENT) != EI_NIDENT) {
-		SET_ERROR(ERRNO, fdata.name);
-		return (-1);
-	}
-	if (ft_strncmp(e_ident, ELFMAG, SELFMAG)) {
-		SET_ERROR(ERWFFMT, fdata.name);
-		return (-1);
-	}
-	return (0);
-}
-
 int parse_symlist(fdata_t *fdata, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr, Elf64_Shdr *sh_shstrtab) {
 	Elf64_Shdr		*sh_strtab;
 	Elf64_Shdr		*symshdr;
@@ -54,28 +41,55 @@ int parse_file(char *file, data_t *data) {
 	fdata->fd = open(file, O_RDONLY);
 	if (fdata->fd == -1) {
 		if (errno == ENOENT)
-			SET_ERROR(ERNOFILE, file);
-		else
-			SET_ERROR(ERRNO, file);
+			SET_ERROR(ERRNO);
 		return (-1);
 	}
 
-	//check file format
-	if (check_format(*fdata) == -1)
-		return (-1);
-
-	//get file stats
+	//check file stats
 	if (fstat(fdata->fd, &fdata->st) == -1) {
-		SET_ERROR(ERRNO, file);
+		SET_ERROR(ERRNO);
+		return (-1);
+	}
+	if (S_ISDIR(fdata->st.st_mode)) {
+		SET_ERROR(EISDIR);
+		return (-1);
+	}
+
+	//check file size
+	if (fdata->st.st_size == 0) {
+		SET_ERROR(EREMPTY);
+		return (-1);
+	}
+	if (fdata->st.st_size < 84 || fdata->st.st_size < 128) {
+		SET_ERROR(ERWFFMT);
 		return (-1);
 	}
 
 	//map file in memory
 	fdata->map = mmap(0, fdata->st.st_size, PROT_READ, MAP_PRIVATE, fdata->fd, 0);
 	if (fdata->map == MAP_FAILED) {
-		SET_ERROR(ERRNO, file);
+		SET_ERROR(ERRNO);
 		return (-1);
 	}
+
+	//check file format
+	if (ft_strncmp((char*)fdata->map, ELFMAG, SELFMAG) != 0) {
+		SET_ERROR(ERWFFMT);
+		return (-1);
+	}
+
+	//check file os type
+	byte_t ost = *((byte_t*)fdata->map + 4);
+	ft_printf(1, "ost: %d\n", ost);
+	if (ost > 2) {
+		SET_ERROR(ERWFFMT);
+		return (-1);
+	}
+
+	if (ost == 1)
+		parse_symbols_32(fdata);
+	else
+		parse_symbols_64(fdata);
 	
 	//find section header string table
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)fdata->map;
@@ -86,10 +100,28 @@ int parse_file(char *file, data_t *data) {
 	//find symbol tables
 	for (int i = 0; i < ehdr->e_shnum; i++) {
 		Elf64_Shdr *shdr = (Elf64_Shdr *)((char *)fdata->map + ehdr->e_shoff + i * ehdr->e_shentsize);
-		if (shdr->sh_type == SHT_SYMTAB || shdr->sh_type == SHT_DYNSYM) {
+		if (shdr->sh_type == SHT_SYMTAB) {
 			if (parse_symlist(fdata, ehdr, shdr, sh_shstrtab) == -1)
 				return (-1);
 		}
 	}
 	return (0);
+}
+
+int parse_symbols_32(fdata_t *fdata) {
+
+	//cast elf header
+	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)fdata->map;
+
+	//check header size
+	if (ehdr->e_ehsize != sizeof(Elf32_Ehdr)) {
+		SET_ERROR(ERWFFMT);
+		return (-1);
+	}
+
+	//check section header table offset
+	if (ehdr->e_shoff == 0 || ehdr->e_shoff > fdata->st.st_size) {
+		SET_ERROR(ERWFFMT);
+		return (-1);
+	}
 }
