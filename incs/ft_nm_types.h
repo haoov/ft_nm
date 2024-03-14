@@ -7,9 +7,9 @@
 #include <sys/stat.h>
 
 typedef struct symbol_s {
-	__SIZE_TYPE__	value;
-	uint8_t			info;
-	char			*name;
+	size_t	value;
+	uint8_t	info;
+	char	*name;
 } symbol_t;
 
 typedef struct symlist_s {
@@ -22,6 +22,11 @@ typedef struct fdata_s {
 	char		*name;
 	struct stat	st;
 	void		*map;
+	uint8_t		class;
+	size_t		shtab_off;
+	size_t		shtab_entsize;
+	size_t		shtab_count;
+	size_t		shstrtab_off;
 	symlist_t	*symlist;
 } fdata_t;
 
