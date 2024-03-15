@@ -12,14 +12,20 @@ int main(int argc, char **argv) {
 			}
 		};
 	i = parse_opt(&data, argv);
-	if (argc == 1) {
-		if (parse_file("a.out", &data) == -1)
-			return(1);
-	}
 	while (i < argc) {
 		if (parse_file(argv[i], &data) == -1)
 			print_error(error, argv[i]);
+		else
+			print_symbols(&data);
 		i++;
 	}
 	return (0);
+}
+
+void print_symbols(data_t *data) {
+	symlist_t *symlist = data->fdata.symlist;
+	while (symlist) {
+		printf("%.16x %c %s\n", (uint16_t)symlist->sym.value, symlist->sym.type, symlist->sym.name);
+		symlist = symlist->next;
+	}
 }

@@ -11,12 +11,8 @@ uint8_t *error_location(void) {
 }
 
 void print_error(uint8_t err, char *i) {
-	if (err == ERRNO) {
-		if (errno == EISDIR)
-			ft_printf(2, "ft_nm: Warning: \'%s\' is a directory\n", i);
-		else
-			ft_printf(2, "ft_nm: %s: %s\n", i, strerror(errno));
-	}
+	if (err == ERRNO)
+		ft_printf(2, "ft_nm: %s: %s\n", i, strerror(errno));
 	else if (err == ERIOPT)
 		ft_printf(2, "ft_nm: %s \'%c\'\n", err_msgs[err - 1], *i);
 	else if (err == ERNOFILE)

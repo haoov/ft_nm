@@ -1,37 +1,5 @@
 #include "ft_nm.h"
 
-// int parse_symlist(fdata_t *fdata, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr, Elf64_Shdr *sh_shstrtab) {
-// 	Elf64_Shdr		*sh_strtab;
-// 	Elf64_Shdr		*symshdr;
-// 	char			*strtab;
-// 	__SIZE_TYPE__	idx;
-// 	int 			j;
-// 	__SIZE_TYPE__	pos = 0;
-
-// 	for (int i = 0; i < (int)(shdr->sh_size / shdr->sh_entsize); i++) {
-// 		Elf64_Sym *sym = (Elf64_Sym *)((char *)fdata->map + shdr->sh_offset + i * shdr->sh_entsize);
-// 		if ((sym->st_info & 0x0F) == STT_SECTION) {
-// 			symshdr = (Elf64_Shdr *)((char *)fdata->map + ehdr->e_shoff + sym->st_shndx * ehdr->e_shentsize);
-// 			strtab = (char *)fdata->map + sh_shstrtab->sh_offset;
-// 			idx = symshdr->sh_name;
-// 		}
-// 		else {
-// 			sh_strtab = (Elf64_Shdr *)((char *)fdata->map + ehdr->e_shoff + shdr->sh_link * ehdr->e_shentsize);
-// 			strtab = (char *)fdata->map + sh_strtab->sh_offset;
-// 			idx = sym->st_name;
-// 		}
-// 		j = 0;
-// 		while (j < idx) {
-// 			pos += ft_strlen(strtab + pos);
-// 			j++;
-// 		}
-// 		if ((sym->st_info & 0x0F) == STT_NOTYPE && (sym->st_info >> 4) == STB_LOCAL)
-// 			continue;
-// 		ft_printf(1, "%.16x %c %s\n", sym->st_value, 'T', strtab + idx + pos);
-// 	}
-// 	return (0);
-// }
-
 int parse_file(char *file, data_t *data) {
 	fdata_t		*fdata = &data->fdata;
 
@@ -47,7 +15,7 @@ int parse_file(char *file, data_t *data) {
 
 	//check file stats
 	if (fstat(fdata->fd, &fdata->st) == -1) {
-		SET_ERROR(ERRNO);
+		SET_ERROR(ERISDIR);
 		return (-1);
 	}
 	if (S_ISDIR(fdata->st.st_mode)) {
@@ -78,7 +46,7 @@ int parse_file(char *file, data_t *data) {
 		return (-1);
 	}
 
-	//check file os type
+	//check file class
 	fdata->class = *((byte_t*)fdata->map + 4);
 	if (fdata->class == 0 || fdata->class > 2) {
 		SET_ERROR(ERWFFMT);
@@ -89,8 +57,8 @@ int parse_file(char *file, data_t *data) {
 	if (parse_header(fdata) == -1)
 		return (-1);
 
-	if (fdata->class == 1)
-		parse_shdrtab_32(fdata);
+	if (fdata->class == ELFCLASS32)
+		;//parse_shdrtab_32(fdata);
 	else
 		parse_shdrtab_64(fdata);
 	

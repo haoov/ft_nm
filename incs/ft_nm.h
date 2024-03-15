@@ -21,6 +21,18 @@
 
 typedef uint8_t	byte_t;
 
+#define SHDR_OFF(fdata, idx)	(fdata->shtab.off + idx * fdata->shtab.entsize)
+#define SHDR(fdata, idx)		((byte_t*)fdata->map + SHDR_OFF(fdata, idx))
+#define STRTAB(fdata, sh)		((char*)((byte_t*)fdata->map + sh->sh_offset))
+
+#define TEXTSEC(s)		(s->sh_type == SHT_PROGBITS && s->sh_flags == (SHF_ALLOC | SHF_EXECINSTR))
+#define DATASEC(s)		(s->sh_type == SHT_PROGBITS && (s->sh_flags & SHF_ALLOC))
+#define BSSSEC(s)		(s->sh_type == SHT_NOBITS && s->sh_flags == (SHF_ALLOC | SHF_WRITE))
+#define DEBUGSEC(n)		(!ft_strncmp(n, ".debug_", 7))
+#define EHFRAMESEC(n)	(!ft_strncmp(n, ".eh_frame", 9))
+
+#define MINTYPE	"abcdgrst"
+
 int		parse_opt(data_t *data, char **argv);
 int		parse_file(char *file, data_t *data);
 int		parse_header(fdata_t *fdata);
@@ -30,5 +42,9 @@ int		parse_symtab_32(fdata_t *fdata, Elf32_Shdr *shsymtab);
 int		parse_symtab_64(fdata_t *fdata, Elf64_Shdr *shsymtab);
 
 int		check_shdr(void *sh, fdata_t *fdata);
+
+int		add_symbol(fdata_t *fdata, symbol_t sym);
+
+void	print_symbols(data_t *data);
 
 #endif // FT_NM

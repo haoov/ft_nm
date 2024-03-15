@@ -14,9 +14,11 @@
 #define EREMPTY		5
 #define ERRCORRUPT	6
 #define ERMEM		7
-#define ERRNO		8
+#define ERISDIR		8
+#define ERRNO		9
 
 #define	ERIOPT_MSG		"invalid option --"
+#define ERISDIR_MSG		"is a directory"
 #define	ERNOFILE_MSG	"no such file"
 #define	ERWFFMT_MSG		"file format not recognized"
 #define EREMPTY_MSG		"empty file"

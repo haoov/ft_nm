@@ -34,7 +34,7 @@ int check_shdr(void *sh, fdata_t *fdata) {
 	}
 
 	//check section link
-	if (sh_link > fdata->shtab_count) {
+	if (sh_link > fdata->shtab.count) {
 		SET_ERROR(ERWFFMT);
 		return (-1);
 	}
