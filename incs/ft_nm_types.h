@@ -13,6 +13,7 @@ typedef struct symbol_s {
 	size_t	value;
 	uint8_t	type;
 	char	*name;
+	uint8_t	info;
 } symbol_t;
 
 typedef struct symlist_s {

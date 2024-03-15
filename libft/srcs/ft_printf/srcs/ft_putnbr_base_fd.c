@@ -22,6 +22,6 @@ int	ft_putnbr_base_fd(long nbr, const char *base, int fd)
 		nbr *= -1;
 	c = base[nbr % blen];
 	if ((size_t)nbr >= blen)
-		return (ft_putnbr_base_fd(nbr / blen, base, fd) + write(1, &c, 1));
+		return (ft_putnbr_base_fd(nbr / blen, base, fd) + write(fd, &c, 1));
 	return (write(fd, &base[nbr % blen], 1));
 }

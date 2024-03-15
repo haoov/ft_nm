@@ -30,6 +30,7 @@ typedef uint8_t	byte_t;
 #define BSSSEC(s)		(s->sh_type == SHT_NOBITS && s->sh_flags == (SHF_ALLOC | SHF_WRITE))
 #define DEBUGSEC(n)		(!ft_strncmp(n, ".debug_", 7))
 #define EHFRAMESEC(n)	(!ft_strncmp(n, ".eh_frame", 9))
+#define NOTESEC(n)		(!ft_strncmp(n, ".note", 5) || !ft_strncmp(n, ".comment", 9))
 
 #define MINTYPE	"abcdgrst"
 
@@ -44,6 +45,9 @@ int		parse_symtab_64(fdata_t *fdata, Elf64_Shdr *shsymtab);
 int		check_shdr(void *sh, fdata_t *fdata);
 
 int		add_symbol(fdata_t *fdata, symbol_t sym);
+void	remove_symbol(fdata_t *fdata, symlist_t *elem);
+
+void	apply_opt(data_t *data);
 
 void	print_symbols(data_t *data);
 

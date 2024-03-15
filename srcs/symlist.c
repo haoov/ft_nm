@@ -19,6 +19,22 @@ int add_symbol(fdata_t *fdata, symbol_t sym) {
 		last->next = new;
 }
 
+void remove_symbol(fdata_t *fdata, symlist_t *elem) {
+	symlist_t *tmp;
+
+	if (fdata->symlist == elem) {
+		fdata->symlist = elem->next;
+		free(elem);
+	}
+	else {
+		tmp = fdata->symlist;
+		while (tmp->next != elem)
+			tmp = tmp->next;
+		tmp->next = elem->next;
+		free(elem);
+	}
+}
+
 void free_symlist(symlist_t *symlist) {
 	symlist_t *tmp;
 

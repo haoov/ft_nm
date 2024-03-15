@@ -64,25 +64,24 @@ uint8_t symbol_type_64(Elf64_Sym *sym, Elf64_Shdr *sh_strtab, fdata_t *fdata) {
 	uint8_t 	type;
 	char		*sh_name;
 
+	if (sym->st_shndx == SHN_UNDEF) {
+		//undefined symbol
+		type = 'U';
+		if (ELF_ST_BIND(sym->st_info) == STB_WEAK) {
+			if (ELF_ST_TYPE(sym->st_info) == STT_OBJECT)
+				type = 'v';
+			else
+				type = 'w';
+		}
+	}
 	//if section indice is reserved
-	if (sym->st_shndx >= SHN_LORESERVE && sym->st_shndx <= SHN_HIRESERVE) {
+	else if (sym->st_shndx >= SHN_LORESERVE && sym->st_shndx <= SHN_HIRESERVE) {
 		if (sym->st_shndx == SHN_ABS)
 			//absolute symbol
 			type = 'a';
 		else if (sym->st_shndx == SHN_COMMON)
 			//common symbol
 			type = 'c';
-		else if (sym->st_shndx == SHN_UNDEF)
-			//undefined symbol
-			type = 'U';
-		if (ELF_ST_BIND(sym->st_info) == STT_GNU_IFUNC)
-			type = 'i';
-		else if (ELF_ST_BIND(sym->st_info) == STB_WEAK) {
-			if (ELF_ST_TYPE(sym->st_info) == STT_OBJECT)
-				type = 'v';
-			else
-				type = 'w';
-		}
 	}
 	else {
 		//get related section header
@@ -94,8 +93,6 @@ uint8_t symbol_type_64(Elf64_Sym *sym, Elf64_Shdr *sh_strtab, fdata_t *fdata) {
 
 		//get section name
 		sh_name = get_name(STRTAB(fdata, sh_strtab), sh->sh_name, sh_strtab->sh_size);
-
-		ft_printf(1, "sh_name: %s\n", sh_name);
 
 		//check section name
 		if (sh_name == NULL)
@@ -118,6 +115,10 @@ uint8_t symbol_type_64(Elf64_Sym *sym, Elf64_Shdr *sh_strtab, fdata_t *fdata) {
 			type = 'N';
 		else if (EHFRAMESEC(sh_name))
 			type = 'p';
+		else if (NOTESEC(sh_name))
+			type = 'n';
+		else if (DATASEC(sh))
+			type = 'd';
 
 		if (ELF_ST_BIND(sym->st_info) == STT_GNU_IFUNC)
 			type = 'i';
@@ -165,6 +166,8 @@ int parse_symtab_64(fdata_t *fdata, Elf64_Shdr *sh_symtab) {
 		symbol.type = symbol_type_64(sym, sh_strtab, fdata);
 
 		symbol.value = sym->st_value;
+
+		symbol.info = sym->st_info;
 
 		if (ELF_ST_TYPE(sym->st_info) == STT_NOTYPE && ELF_ST_BIND(sym->st_info) == STB_LOCAL)
 			continue;

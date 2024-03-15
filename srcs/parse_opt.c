@@ -14,7 +14,11 @@ int parse_opt(data_t *data, char **argv) {
 				}
 				if (argv[i][j] == 'n')
 					data->opt &= ~ONSRT;
-				if (argv[i][j] == 'u')
+				if (argv[i][j] == 'u') {
+					data->opt &= ~OALL;
+					data->opt &= ~OGLOB;
+				}
+				if (argv[i][j] == 'g')
 					data->opt &= ~OALL;
 			}
 			else {

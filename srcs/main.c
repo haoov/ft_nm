@@ -15,17 +15,27 @@ int main(int argc, char **argv) {
 	while (i < argc) {
 		if (parse_file(argv[i], &data) == -1)
 			print_error(error, argv[i]);
-		else
+		else {
+			apply_opt(&data);
 			print_symbols(&data);
+		}
 		i++;
 	}
 	return (0);
 }
 
-void print_symbols(data_t *data) {
+void apply_opt(data_t *data) {
 	symlist_t *symlist = data->fdata.symlist;
+	symlist_t *tmp;
+
 	while (symlist) {
-		printf("%.16x %c %s\n", (uint16_t)symlist->sym.value, symlist->sym.type, symlist->sym.name);
-		symlist = symlist->next;
+		tmp = symlist->next;
+		if (data->opt & OUND && symlist->sym.type != 'U')
+			remove_symbol(&data->fdata, symlist);
+		else if (data->opt & OGLOB && ELF_ST_BIND(symlist->sym.info) != STB_GLOBAL)
+			remove_symbol(&data->fdata, symlist);
+		else if (!(data->opt & OALL) && ELF_ST_BIND(symlist->sym.info) == STB_LOCAL)
+			remove_symbol(&data->fdata, symlist);
+		symlist = tmp;
 	}
 }
