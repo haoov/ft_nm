@@ -19,6 +19,9 @@
 #define OREV	0x10 //-r display in reverse order
 #define ONSRT	0x20 //-p dont sort
 
+#define ULCMP	1
+#define STRCMP	2
+
 typedef uint8_t	byte_t;
 
 #define SHDR_OFF(fdata, idx)	(fdata->shtab.off + idx * fdata->shtab.entsize)
@@ -29,12 +32,10 @@ typedef uint8_t	byte_t;
 #define DATASEC(s)		(s->sh_type == SHT_PROGBITS && (s->sh_flags & SHF_ALLOC))
 #define BSSSEC(s)		(s->sh_type == SHT_NOBITS && s->sh_flags == (SHF_ALLOC | SHF_WRITE))
 #define DEBUGSEC(n)		(!ft_strncmp(n, ".debug_", 7))
-#define EHFRAMESEC(n)	(!ft_strncmp(n, ".eh_frame", 9))
-#define NOTESEC(n)		(!ft_strncmp(n, ".note", 5) || !ft_strncmp(n, ".comment", 9))
 
 #define MINTYPE	"abcdgrst"
 
-int		parse_opt(data_t *data, char **argv);
+int		parse_opt(data_t *data, char **argv, int argc);
 int		parse_file(char *file, data_t *data);
 int		parse_header(fdata_t *fdata);
 int		parse_shdrtab_32(fdata_t *fdata);
@@ -46,9 +47,9 @@ int		check_shdr(void *sh, fdata_t *fdata);
 
 int		add_symbol(fdata_t *fdata, symbol_t sym);
 void	remove_symbol(fdata_t *fdata, symlist_t *elem);
-
-void	apply_opt(data_t *data);
-
-void	print_symbols(data_t *data);
+void	print_symbols(data_t *data, int c);
+void	sort_symlist(fdata_t *fdata, int cmp);
+void	reverse_symlist(fdata_t *fdata);
+void	free_symlist(symlist_t *symlist);
 
 #endif // FT_NM

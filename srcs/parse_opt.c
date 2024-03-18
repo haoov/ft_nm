@@ -1,10 +1,14 @@
 #include "ft_nm.h"
 
-int parse_opt(data_t *data, char **argv) {
-	int		i;
+int parse_opt(data_t *data, char **argv, int argc) {
+	int		i = 1;
 	char	*f;
 	
-	for (i = 1; (argv[i] && argv[i][0] == '-'); i++) {
+	while (i < argc) {
+		if (argv[i] && (argv[i][0] != '-' || ft_strlen(argv[i]) == 1)) {
+			i++;
+			continue;
+		}
 		for (int j = 1; argv[i][j]; j++) {
 			if ((f = ft_strchr(OPTS, argv[i][j]))) {
 				data->opt |= (1 << (f - OPTS));
@@ -26,6 +30,7 @@ int parse_opt(data_t *data, char **argv) {
 				exit(-1);
 			}
 		}
+		i++;
 	}
 	return (i);
 }

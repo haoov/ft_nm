@@ -103,20 +103,16 @@ uint8_t symbol_type_64(Elf64_Sym *sym, Elf64_Shdr *sh_strtab, fdata_t *fdata) {
 			type = 't';
 		else if (DATASEC(sh) && !ft_strcmp(sh_name, ".data"))
 			type = 'd';
-		else if (BSSSEC(sh) && !ft_strcmp(sh_name, ".bss"))
-			type = 'b';
-		else if (BSSSEC(sh) && !ft_strcmp(sh_name, ".sbss"))
-			type = 's';
 		else if (DATASEC(sh) && !ft_strcmp(sh_name, ".rodata"))
 			type = 'r';
 		else if (DATASEC(sh) && !ft_strcmp(sh_name, ".sdata"))
 			type = 'g';
+		else if (BSSSEC(sh) && !ft_strcmp(sh_name, ".bss"))
+			type = 'b';
+		else if (BSSSEC(sh) && !ft_strcmp(sh_name, ".sbss"))
+			type = 's';
 		else if (DEBUGSEC(sh_name))
 			type = 'N';
-		else if (EHFRAMESEC(sh_name))
-			type = 'p';
-		else if (NOTESEC(sh_name))
-			type = 'n';
 		else if (DATASEC(sh))
 			type = 'd';
 
@@ -152,7 +148,7 @@ int parse_symtab_64(fdata_t *fdata, Elf64_Shdr *sh_symtab) {
 	if (check_shdr(sh_strtab, fdata) == -1)
 		return (-1);
 
-	for (int i = 0; i < (sh_symtab->sh_size / sh_symtab->sh_entsize); i++) {
+	for (int i = 1; i < (sh_symtab->sh_size / sh_symtab->sh_entsize); i++) {
 		//get current symbol
 		sym_off = sh_symtab->sh_offset + i * sh_symtab->sh_entsize;
 		sym = (Elf64_Sym*)((byte_t*)fdata->map + sym_off);
@@ -169,8 +165,6 @@ int parse_symtab_64(fdata_t *fdata, Elf64_Shdr *sh_symtab) {
 
 		symbol.info = sym->st_info;
 
-		if (ELF_ST_TYPE(sym->st_info) == STT_NOTYPE && ELF_ST_BIND(sym->st_info) == STB_LOCAL)
-			continue;
 		add_symbol(fdata, symbol);
 	}
 
