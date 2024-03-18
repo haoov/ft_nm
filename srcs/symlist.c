@@ -1,5 +1,13 @@
 #include "ft_nm.h"
 
+char type_order[] = {
+	'T', 't', 'D', 'd', 'B',
+	'b', 'U', 'u', 'C', 'c',
+	'W', 'w', 'V', 'v', 'G',
+	'g', 'R', 'r', 'N', 'n',
+	'P', 'p'
+};
+
 int add_symbol(fdata_t *fdata, symbol_t sym) {
 	symlist_t *new;
 	symlist_t *last;
@@ -69,24 +77,40 @@ void swap_symbols(symlist_t *a, symlist_t *b) {
 }
 
 void sort_symlist(fdata_t *fdata, int cmp) {
-	symlist_t *symlist = fdata->symlist;
-	symlist_t *tmp;
+    symlist_t *start = fdata->symlist;
+    symlist_t *tmp;
+    int swapped;
 
-	while (symlist) {
-		tmp = symlist;
-		while (tmp->next) {
-			if (cmp == ULCMP) {
-				if (tmp->sym.value > tmp->next->sym.value)
-					swap_symbols(tmp, tmp->next);
-			}
+    do {
+        swapped = 0;
+        tmp = start;
+
+        while (tmp->next != NULL) {
+            if (cmp == ULCMP) {
+                if (tmp->sym.value > tmp->next->sym.value) {
+                    swap_symbols(tmp, tmp->next);
+                    swapped = 1;
+                }
+				else if (tmp->sym.value == tmp->next->sym.value) {
+					if (tmp->sym.type == 'U' && tmp->next->sym.type != 'U') {
+						swap_symbols(tmp, tmp->next);
+						swapped = 1;
+					}
+					else if (ft_strcmp(tmp->sym.name, tmp->next->sym.name) > 0) {
+						swap_symbols(tmp, tmp->next);
+						swapped = 1;
+					}
+				}
+            }
 			else {
-				if (ft_strcmp(tmp->sym.name, tmp->next->sym.name) > 0)
-					swap_symbols(tmp, tmp->next);
-			}
-			tmp = tmp->next;
-		}
-		symlist = symlist->next;
-	}
+                if (ft_strcmp(tmp->sym.name, tmp->next->sym.name) > 0) {
+                    swap_symbols(tmp, tmp->next);
+                    swapped = 1;
+                }
+            }
+            tmp = tmp->next;
+        }
+    } while (swapped);
 }
 
 void reverse_symlist(fdata_t *fdata) {
