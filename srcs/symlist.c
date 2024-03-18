@@ -1,12 +1,6 @@
 #include "ft_nm.h"
 
-char type_order[] = {
-	'T', 't', 'D', 'd', 'B',
-	'b', 'U', 'u', 'C', 'c',
-	'W', 'w', 'V', 'v', 'G',
-	'g', 'R', 'r', 'N', 'n',
-	'P', 'p'
-};
+char *ign_char = "._";
 
 int add_symbol(fdata_t *fdata, symbol_t sym) {
 	symlist_t *new;
@@ -76,6 +70,14 @@ void swap_symbols(symlist_t *a, symlist_t *b) {
 	b->sym = tmp;
 }
 
+int compare(symbol_t s1, symbol_t s2) {
+	while (ft_strchr(ign_char, *s1.name))
+		s1.name++;
+	while (ft_strchr(ign_char, *s2.name))
+		s2.name++;
+	return (ft_strcmp(s1.name, s2.name));
+}
+
 void sort_symlist(fdata_t *fdata, int cmp) {
     symlist_t *start = fdata->symlist;
     symlist_t *tmp;
@@ -85,7 +87,7 @@ void sort_symlist(fdata_t *fdata, int cmp) {
         swapped = 0;
         tmp = start;
 
-        while (tmp->next != NULL) {
+        while (tmp && tmp->next != NULL) {
             if (cmp == ULCMP) {
                 if (tmp->sym.value > tmp->next->sym.value) {
                     swap_symbols(tmp, tmp->next);
@@ -103,7 +105,7 @@ void sort_symlist(fdata_t *fdata, int cmp) {
 				}
             }
 			else {
-                if (ft_strcmp(tmp->sym.name, tmp->next->sym.name) > 0) {
+                if (compare(tmp->sym, tmp->next->sym) > 0) {
                     swap_symbols(tmp, tmp->next);
                     swapped = 1;
                 }
