@@ -28,10 +28,18 @@ typedef uint8_t	byte_t;
 #define SHDR(fdata, idx)		((byte_t*)fdata->map + SHDR_OFF(fdata, idx))
 #define STRTAB(fdata, sh)		((char*)((byte_t*)fdata->map + sh->sh_offset))
 
+#define RAWSEC(s)		(s->sh_type == SHT_PROGBITS)
 #define TEXTSEC(s)		(s->sh_type == SHT_PROGBITS && s->sh_flags == (SHF_ALLOC | SHF_EXECINSTR))
 #define DATASEC(s)		(s->sh_type == SHT_PROGBITS && (s->sh_flags & SHF_ALLOC))
 #define BSSSEC(s)		(s->sh_type == SHT_NOBITS && s->sh_flags == (SHF_ALLOC | SHF_WRITE))
 #define DEBUGSEC(n)		(!ft_strncmp(n, ".debug_", 7))
+
+#define SEC_CODE			0x010
+#define SEC_DATA			0x020
+#define SEC_READONLY		0x008
+#define SEC_SMALL_DATA		0x400000
+#define SEC_HAS_CONTENTS	0x100
+#define SEC_DEBUGGING		0x2000
 
 #define MINTYPE	"abcdgrst"
 
