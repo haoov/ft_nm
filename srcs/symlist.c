@@ -75,23 +75,25 @@ void swap_symbols(symlist_t *a, symlist_t *b) {
 int compare(symbol_t s1, symbol_t s2) {
 	char c1 = 0, c2 = 0;
 
-	while (ft_strchr(ign_char, *s1.name))
-		s1.name++;
-	while (ft_strchr(ign_char, *s2.name))
-		s2.name++;
-	while (*s1.name && *s2.name) {
-		if (*s1.name >= 'A' && *s1.name <= 'Z')
-			c1 = *s1.name + 32;
-		else
-			c1 = *s1.name;
-		if (*s2.name >= 'A' && *s2.name <= 'Z')
-			c2 = *s2.name + 32;
-		else
-			c2 = *s2.name;
-		if (c1 != c2)
-			break;
-		s1.name++;
-		s2.name++;
+	if (s1.name && s2.name) {
+		while (ft_strchr(ign_char, *s1.name))
+			s1.name++;
+		while (ft_strchr(ign_char, *s2.name))
+			s2.name++;
+		while (*s1.name && *s2.name) {
+			if (*s1.name >= 'A' && *s1.name <= 'Z')
+				c1 = *s1.name + 32;
+			else
+				c1 = *s1.name;
+			if (*s2.name >= 'A' && *s2.name <= 'Z')
+				c2 = *s2.name + 32;
+			else
+				c2 = *s2.name;
+			if (c1 != c2)
+				break;
+			s1.name++;
+			s2.name++;
+		}
 	}
 	if (!(c1 - c2)) {
 		if (s1.value != s2.value)

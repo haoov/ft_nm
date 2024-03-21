@@ -15,17 +15,10 @@ char sec_types[] = {
 };
 
 char *get_name(char *strtab, size_t idx, size_t shsize) {
-	size_t j = 0, pos = 0;
-
-	while (j < idx && pos < shsize) {
-		pos += ft_strnlen(strtab + pos, shsize - pos);
-		j++;
-	}
-	if ((j < idx && pos == shsize) || pos + idx > shsize) {
-		SET_ERROR(ERWFFMT);
+	size_t len = ft_strnlen(strtab + idx, shsize - idx);
+	if (len + idx >= shsize)
 		return (NULL);
-	}
-	return (strtab + idx + pos);
+	return (strtab + idx);
 }
 
 int check_opts(data_t *data, symbol_t sym) {
@@ -33,9 +26,13 @@ int check_opts(data_t *data, symbol_t sym) {
 		return (0);
 	else if (data->opt & OGLOB && ELF_ST_BIND(sym.info) != STB_GLOBAL)
 		return (0);
-	else if (!(data->opt & OALL)
-			&& (ft_strchr("NAa", sym.type) || sym.name[0] == '.'))
-		return (0);
+	else if (!(data->opt & OALL)) {
+		if (ft_strchr("NAa", sym.type))
+			return (0);
+		if (sym.name && sym.name[0] == '.')
+			return (0);
+	}
+	return (1);
 }
 
 //64 BITS
@@ -187,8 +184,6 @@ int parse_symtab_64(data_t *data, fdata_t *fdata, Elf64_Shdr *sh_symtab) {
 
 		//get symbol name
 		symbol.name = symbol_name_64(sym, sh_symtab, sh_strtab, fdata);
-		if (symbol.name == NULL)
-			return (-1);
 
 		//get symbol type
 		symbol.type = symbol_type_64(sym, sh_strtab, fdata);
@@ -353,8 +348,6 @@ int parse_symtab_32(data_t *data, fdata_t *fdata, Elf32_Shdr *sh_symtab) {
 
 		//get symbol name
 		symbol.name = symbol_name_32(sym, sh_symtab, sh_strtab, fdata);
-		if (symbol.name == NULL)
-			return (-1);
 
 		//get symbol type
 		symbol.type = symbol_type_32(sym, sh_strtab, fdata);
