@@ -58,7 +58,7 @@ int parse_file(char *file, data_t *data) {
 		return (-1);
 
 	if (fdata->class == ELFCLASS32)
-		;//parse_shdrtab_32(fdata);
+		parse_shdrtab_32(data, fdata);
 	else
 		parse_shdrtab_64(data, fdata);
 	

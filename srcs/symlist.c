@@ -41,6 +41,8 @@ void print_symbols(data_t *data, int c) {
 	if (c > 1)
 		ft_printf(1, "\n%s:\n", data->fdata.name);
 	symlist_t *symlist = data->fdata.symlist;
+	if (!symlist)
+		ft_printf(1, "ft_nm: %s: no symbols\n", data->fdata.name);
 	while (symlist) {
 		if (ft_strchr("Uwv", symlist->sym.type))
 			ft_printf(1, "%16s", "");
