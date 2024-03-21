@@ -76,11 +76,11 @@ int compare(symbol_t s1, symbol_t s2) {
 	char c1 = 0, c2 = 0;
 
 	if (s1.name && s2.name) {
-		while (ft_strchr(ign_char, *s1.name))
-			s1.name++;
-		while (ft_strchr(ign_char, *s2.name))
-			s2.name++;
 		while (*s1.name && *s2.name) {
+			while (ft_strchr(ign_char, *s1.name))
+				s1.name++;
+			while (ft_strchr(ign_char, *s2.name))
+				s2.name++;
 			if (*s1.name >= 'A' && *s1.name <= 'Z')
 				c1 = *s1.name + 32;
 			else
