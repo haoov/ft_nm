@@ -47,9 +47,9 @@ int		parse_opt(data_t *data, char **argv, int argc);
 int		parse_file(char *file, data_t *data);
 int		parse_header(fdata_t *fdata);
 int		parse_shdrtab_32(fdata_t *fdata);
-int		parse_shdrtab_64(fdata_t *fdata);
+int		parse_shdrtab_64(data_t *data, fdata_t *fdata);
 int		parse_symtab_32(fdata_t *fdata, Elf32_Shdr *shsymtab);
-int		parse_symtab_64(fdata_t *fdata, Elf64_Shdr *shsymtab);
+int		parse_symtab_64(data_t *data, fdata_t *fdata, Elf64_Shdr *shsymtab);
 
 int		check_shdr(void *sh, fdata_t *fdata);
 

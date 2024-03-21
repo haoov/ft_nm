@@ -42,7 +42,7 @@ void print_symbols(data_t *data, int c) {
 		ft_printf(1, "\n%s:\n", data->fdata.name);
 	symlist_t *symlist = data->fdata.symlist;
 	while (symlist) {
-		if (symlist->sym.type == 'U')
+		if (ft_strchr("Uwv", symlist->sym.type))
 			ft_printf(1, "%16s", "");
 		else
 			ft_printf(1, "%.16x", (uint32_t)symlist->sym.value);
@@ -71,11 +71,33 @@ void swap_symbols(symlist_t *a, symlist_t *b) {
 }
 
 int compare(symbol_t s1, symbol_t s2) {
+	char c1 = 0, c2 = 0;
+
 	while (ft_strchr(ign_char, *s1.name))
 		s1.name++;
 	while (ft_strchr(ign_char, *s2.name))
 		s2.name++;
-	return (ft_strcmp(s1.name, s2.name));
+	while (*s1.name && *s2.name) {
+		if (*s1.name >= 'A' && *s1.name <= 'Z')
+			c1 = *s1.name + 32;
+		else
+			c1 = *s1.name;
+		if (*s2.name >= 'A' && *s2.name <= 'Z')
+			c2 = *s2.name + 32;
+		else
+			c2 = *s2.name;
+		if (c1 != c2)
+			break;
+		s1.name++;
+		s2.name++;
+	}
+	if (!(c1 - c2)) {
+		if (s1.value != s2.value)
+			return (s1.value - s2.value);
+		else
+			return (s1.type - s2.type);
+	}
+	return (c1 - c2);
 }
 
 void sort_symlist(fdata_t *fdata, int cmp) {

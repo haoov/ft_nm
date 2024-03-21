@@ -26,16 +26,6 @@ void apply_opt(data_t *data) {
 	symlist_t *symlist = data->fdata.symlist;
 	symlist_t *tmp;
 
-	while (symlist) {
-		tmp = symlist->next;
-		if (data->opt & OUND && symlist->sym.type != 'U')
-			remove_symbol(&data->fdata, symlist);
-		else if (data->opt & OGLOB && ELF_ST_BIND(symlist->sym.info) != STB_GLOBAL)
-			remove_symbol(&data->fdata, symlist);
-		else if (!(data->opt & OALL) && ELF_ST_BIND(symlist->sym.info) == STB_LOCAL)
-			remove_symbol(&data->fdata, symlist);
-		symlist = tmp;
-	}
 	if (data->opt & ONSRT)
 		return;
 	else if (data->opt & ONUM)

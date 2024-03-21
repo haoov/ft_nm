@@ -94,7 +94,7 @@ char sec_type(fdata_t *fdata, Elf64_Sym *sym, Elf64_Shdr *sh_strtab) {
 		return (0);
 
 	while (i < 19) {
-		if (!ft_strcmp(sh_name, sec_names[i]))
+		if (!ft_strncmp(sh_name, sec_names[i], ft_strlen(sec_names[i])))
 			return (sec_types[i]);
 		i++;
 	}
@@ -145,7 +145,8 @@ uint8_t symbol_type_64(Elf64_Sym *sym, Elf64_Shdr *sh_strtab, fdata_t *fdata) {
 		else
 			return ('W');
 	}
-	if (!(ELF_ST_BIND(sym->st_info) == STB_GLOBAL) && !(ELF_ST_BIND(sym->st_info) == STB_LOCAL))
+	if (!(ELF_ST_BIND(sym->st_info) == STB_GLOBAL)
+		&& !(ELF_ST_BIND(sym->st_info) == STB_LOCAL))
 		return ('?');
 	if (sym->st_shndx == SHN_ABS)
 		type = 'a';
@@ -158,7 +159,17 @@ uint8_t symbol_type_64(Elf64_Sym *sym, Elf64_Shdr *sh_strtab, fdata_t *fdata) {
 	return (type);
 }
 
-int parse_symtab_64(fdata_t *fdata, Elf64_Shdr *sh_symtab) {
+int check_opts(data_t *data, symbol_t sym) {
+	if (data->opt & OUND && sym.type != 'U')
+		return (0);
+	else if (data->opt & OGLOB && ELF_ST_BIND(sym.info) != STB_GLOBAL)
+		return (0);
+	else if (!(data->opt & OALL)
+			&& (ft_strchr("NAa", sym.type) || sym.name[0] == '.'))
+		return (0);
+}
+
+int parse_symtab_64(data_t *data, fdata_t *fdata, Elf64_Shdr *sh_symtab) {
 	Elf64_Sym	*sym;
 	size_t		sym_off;
 	symbol_t	symbol;
@@ -188,7 +199,8 @@ int parse_symtab_64(fdata_t *fdata, Elf64_Shdr *sh_symtab) {
 
 		symbol.info = sym->st_info;
 
-		add_symbol(fdata, symbol);
+		if (check_opts(data, symbol))
+			add_symbol(fdata, symbol);
 	}
 
 	return (0);

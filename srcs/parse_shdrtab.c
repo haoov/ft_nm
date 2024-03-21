@@ -1,6 +1,6 @@
 #include "ft_nm.h"
 
-int parse_shdrtab_64(fdata_t *fdata) {
+int parse_shdrtab_64(data_t *data, fdata_t *fdata) {
 	Elf64_Shdr	*shstrtab;
 	Elf64_Shdr	*shcur;
 	size_t		shcur_off;
@@ -16,7 +16,7 @@ int parse_shdrtab_64(fdata_t *fdata) {
 
 		//check section type
 		if (shcur->sh_type == SHT_SYMTAB) {
-			if (parse_symtab_64(fdata, shcur) == -1)
+			if (parse_symtab_64(data, fdata, shcur) == -1)
 				return (-1);
 		}
 	}
