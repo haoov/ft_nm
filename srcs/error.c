@@ -3,7 +3,8 @@
 uint8_t error_g = 0;
 
 char *err_msgs[] = {
-	ERIOPT_MSG, ERNOFILE_MSG, ERWFFMT_MSG
+	ERIOPT_MSG, ERNOFILE_MSG, ERWFFMT_MSG, EREMPTY_MSG, ERRCORRUPT_MSG,
+	ERMEM_MSG, ERISDIR_MSG 
 };
 
 uint8_t *error_location(void) {

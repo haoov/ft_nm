@@ -19,7 +19,7 @@ int parse_file(char *file, data_t *data) {
 		return (-1);
 	}
 	if (S_ISDIR(fdata->st.st_mode)) {
-		SET_ERROR(EISDIR);
+		SET_ERROR(ERISDIR);
 		return (-1);
 	}
 

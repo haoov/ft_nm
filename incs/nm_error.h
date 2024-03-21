@@ -10,12 +10,11 @@
 #define ERIOPT		1
 #define ERNOFILE	2
 #define ERWFFMT		3
-#define EROUTB		4
-#define EREMPTY		5
-#define ERRCORRUPT	6
-#define ERMEM		7
-#define ERISDIR		8
-#define ERRNO		9
+#define EREMPTY		4	
+#define ERRCORRUPT	5
+#define ERMEM		6
+#define ERISDIR		7
+#define ERRNO		8
 
 #define	ERIOPT_MSG		"invalid option --"
 #define ERISDIR_MSG		"is a directory"
